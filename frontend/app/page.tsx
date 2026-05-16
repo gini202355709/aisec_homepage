@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { 
   ChevronDown, Search, Menu, ArrowRight, 
   Lock, GraduationCap, Globe, Beaker, 
@@ -9,7 +10,7 @@ import {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#f2f5fa] font-sans text-[#1a2a3a] selection:bg-[#1b3f7a] selection:text-white">
+    <div className="min-h-screen bg-[##2563eb] font-sans text-[#1a2a3a] selection:bg-[#1b3f7a] selection:text-white">
       
       {/* 1. UTIL BAR */}
       <div className="hidden lg:block bg-white border-b border-[#eaeff8] py-2">
@@ -39,20 +40,41 @@ export default function Home() {
           {/* Navigation - Desktop */}
           <nav className="hidden lg:flex items-center h-full">
             <ul className="flex h-full items-stretch">
-              {[
-                { title: '협회소개', subs: ['설립목적', '협회장 인사말', '비전', '연혁'] },
-                { title: '조직 및 임원', subs: ['조직도', '이사진', '사무국'] },
-                { title: '자료 및 소식', subs: ['공지사항', '자료실', '갤러리'] },
-                { title: '사업 및 교육', subs: ['사업활동', '교육프로그램', '세미나'] },
-                { title: '회원안내', subs: ['회원혜택', '가입신청', '회원사현황'] },
-              ].map((item) => (
+              {
+              [
+                { title: '협회소개', 
+                  href: '/association',
+                  subs: ['설립목적', '협회장 인사말', '비전', '연혁', '정관/회칙'] },
+                { title: '조직 및 임원', subs: ['조직도', '이사진', '사무국 안내'] },
+                { title: '사업 활동 및 교육 행사' },
+                { title: '회원 안내' },
+                { title: '자료 및 소식',
+                  href: '/news',
+                  subs: ['공지사항', '자료실', '갤러리'] },
+                { title: '문의하기' },
+        ]
+              .map((item) => (
                 <li key={item.title} className="group relative flex items-center">
-                  <a href="#" className="flex items-center gap-1 px-5 h-full text-[15px] font-medium text-[#3a4a5c] group-hover:text-[#1b3f7a] transition-colors border-b-2 border-transparent group-hover:border-[#1b3f7a]">
-                    {item.title} <ChevronDown size={14} className="opacity-40 group-hover:rotate-180 transition-transform" />
-                  </a>
+                  <Link
+                    href={
+                      item.title === '협회소개'
+                        ? '/association'
+                        : item.title === '자료 및 소식'
+                        ? '/news'
+                        : '#'
+                    }
+                    className="flex items-center gap-1 px-5 h-full text-[15px] font-medium text-[#3a4a5c] group-hover:text-[#1b3f7a] transition-colors border-b-2 border-transparent group-hover:border-[#1b3f7a]"
+                  >
+                    {item.title}
+                    <ChevronDown
+                      size={14}
+                      className="opacity-40 group-hover:rotate-180 transition-transform"
+                    />
+                  </Link>
+
                   {/* Dropdown */}
                   <div className="absolute top-full left-0 min-w-[180px] bg-white border border-[#dde4ef] border-t-2 border-t-[#1b3f7a] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-2 group-hover:translate-y-0 transition-all duration-200">
-                    {item.subs.map((sub) => (
+                    {item.subs?.map((sub) => (
                       <a key={sub} href="#" className="block px-5 py-3 text-[14px] text-[#3a4a5c] hover:bg-[#f0f4fb] hover:text-[#1b3f7a] hover:pl-7 transition-all border-b border-[#f2f5fa] last:border-0">
                         {sub}
                       </a>
@@ -82,13 +104,13 @@ export default function Home() {
           <div>
             <span className="inline-block px-4 py-1.5 bg-[#e8eef8] text-[#2a5298] text-[13px] font-bold rounded-full mb-6">AI 시대의 안전한 미래를 만듭니다</span>
             <h1 className="text-4xl md:text-[52px] font-bold leading-[1.15] tracking-tight mb-8 break-keep">
-              인공지능 보안 기술 연구 및<br />표준화를 선도하는 <strong className="text-[#1b3f7a]">전문가 협회</strong>
+              인공지능 보안 기술 연구 및<br />표준화를 선도하는 <strong className="text-[#2563eb]">전문가 협회</strong>
             </h1>
             <p className="text-[17px] text-[#7a8fa8] leading-relaxed mb-10 max-w-[500px] break-keep">
               한국AI보안협회는 인공지능 기술의 안전하고 신뢰할 수 있는 발전을 위해 산학연관이 함께 만들어가는 전문가 집단입니다.
             </p>
             <div className="flex flex-wrap gap-4">
-              <button className="flex items-center gap-2 px-9 py-4 bg-[#1b3f7a] text-white rounded-full font-bold hover:bg-[#142e5c] transition-all hover:shadow-xl hover:-translate-y-1">
+              <button className="flex items-center gap-2 px-9 py-4 bg-[#2563eb] text-white rounded-full font-bold hover:bg-[#142e5c] transition-all hover:shadow-xl hover:-translate-y-1">
                 협회 가입하기 <ArrowRight size={18} />
               </button>
               <button className="px-9 py-4 bg-white border border-[#dde4ef] text-[#3a4a5c] rounded-full font-bold hover:border-[#1b3f7a] hover:text-[#1b3f7a] transition-all">
@@ -160,7 +182,7 @@ export default function Home() {
             {[
               { cat: '공지사항', title: '2025년도 정기총회 개최 안내', date: '2025.01.15', icon: <Megaphone className="text-white" />, color: 'bg-[#1b3f7a]' },
               { cat: '자료실', title: 'AI 보안 가이드라인 v2.0 배포', date: '2025.01.08', icon: <FileText className="text-[#2a5298]" />, color: 'bg-[#dce8ff]' },
-              { cat: '갤러리', title: 'AI 보안 컨퍼런스 2024 결과 보고', date: '2024.12.20', icon: <ImageIcon className="text-[#2a5298]" />, color: 'bg-[#e0ecff]' },
+              { cat: '갤러리', title: 'AI 보안 컨퍼런스 2026 결과 보고', date: '2026.05.14', icon: <ImageIcon className="text-[#2a5298]" />, color: 'bg-[#e0ecff]' },
             ].map((news, i) => (
               <div key={i} className="bg-white rounded-[24px] overflow-hidden border border-[#dde4ef] hover:-translate-y-2 transition-all hover:shadow-2xl group cursor-pointer">
                 <div className={`h-48 flex items-center justify-center relative ${news.color}`}>
@@ -286,11 +308,11 @@ export default function Home() {
             </div>
             <p className="text-[14px] text-[#7a8fa8] leading-relaxed">
               부산광역시 XX구 XX대로 XXX<br />
-              대표전화 : 02-XXXX-XXXX | 팩스 : 02-XXXX-XXXX<br />
+              대표전화 : 051-XXXX-XXXX | 팩스 : 051-XXXX-XXXX<br />
               이메일 : info@kaisa.or.kr
             </p>
           </div>
-          {['협회 소개', '자료 및 소식', '회원 서비스'].map(t => (
+          {['협회 소개', '조직 및 임원', '자료 및 소식'].map(t => (
             <div key={t}>
               <h4 className="text-[15px] font-bold mb-6">{t}</h4>
               <ul className="space-y-4 text-[14px] text-[#7a8fa8]">
@@ -303,11 +325,10 @@ export default function Home() {
         </div>
         <div className="border-t border-[#f2f5fa] py-8">
           <div className="max-w-[1320px] mx-auto px-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[13px] text-[#7a8fa8]">
-            <p>© 2024 한국AI보안협회 (Korea AI Security Association). All rights reserved.</p>
+            <p>© 2026 한국AI보안협회 (Korea AI Security Association). All rights reserved.</p>
             <div className="flex gap-8">
               <a href="#" className="hover:text-[#1b3f7a] font-bold">개인정보처리방침</a>
               <a href="#" className="hover:text-[#1b3f7a]">이용약관</a>
-              <a href="#" className="hover:text-[#1b3f7a]">저작권정책</a>
             </div>
           </div>
         </div>

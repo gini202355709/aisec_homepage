@@ -1,278 +1,551 @@
 import React from 'react';
 import {
   ArrowRight,
-  Search,
+  Sparkles,
   Megaphone,
   FileText,
   Image as ImageIcon,
   Download,
   CalendarDays,
   ChevronRight,
-  ShieldCheck,
+  Search,
+  Pin,
+  Eye,
 } from 'lucide-react';
+import Header from '@/components/Header';
 
-const notices = [
-  {
-    category: '공지사항',
-    title: '2026 한국AI보안협회 정기총회 개최 안내',
-    date: '2026.05.14',
-    tag: '중요',
-  },
-  {
-    category: '공지사항',
-    title: 'AI 보안 전문위원회 신규 위원 모집 공고',
-    date: '2026.05.02',
-    tag: '모집',
-  },
-  {
-    category: '공지사항',
-    title: '회원사 대상 AI 보안 교육 프로그램 안내',
-    date: '2026.04.21',
-    tag: '교육',
-  },
-];
+type NoticeItem = {
+  id: number;
+  tag: '중요' | '모집' | '교육' | '일반';
+  title: string;
+  date: string;
+  views: number;
+  pinned?: boolean;
+};
 
-const resources = [
-  {
-    title: 'AI 시스템 보안 가이드라인 v2.0',
-    type: 'PDF',
-    date: '2026.05.10',
-  },
-  {
-    title: '생성형 AI 보안 위협 대응 체크리스트',
-    type: 'DOC',
-    date: '2026.04.28',
-  },
-  {
-    title: 'AI 보안 표준화 동향 리포트',
-    type: 'PDF',
-    date: '2026.04.12',
-  },
-];
+type ResourceItem = {
+  id: number;
+  title: string;
+  type: 'PDF' | 'DOC' | 'XLS' | 'ZIP';
+  size: string;
+  date: string;
+  downloads: number;
+};
 
-const gallery = [
-  {
-    title: 'AI 보안 컨퍼런스 2026',
-    date: '2026.05.14',
-  },
-  {
-    title: '전문위원회 발족식',
-    date: '2026.04.03',
-  },
-  {
-    title: '회원사 네트워킹 데이',
-    date: '2026.03.22',
-  },
-];
+type GalleryItem = {
+  id: number;
+  title: string;
+  desc: string;
+  date: string;
+  gradient: string;
+};
 
 export default function NewsPage() {
+  const navItems = ['공지사항', '자료실', '갤러리'];
+
+  const notices: NoticeItem[] = [
+    {
+      id: 1,
+      tag: '중요',
+      title: '2026 한국AI보안협회 정기총회 및 AI 보안 컨퍼런스 개최 안내',
+      date: '2026.05.14',
+      views: 1284,
+      pinned: true,
+    },
+    {
+      id: 2,
+      tag: '모집',
+      title: 'AI 보안 전문위원회 신규 위원 모집 공고',
+      date: '2026.05.02',
+      views: 892,
+    },
+    {
+      id: 3,
+      tag: '교육',
+      title: '회원사 대상 AI 보안 교육 프로그램 안내',
+      date: '2026.04.21',
+      views: 567,
+    },
+    {
+      id: 4,
+      tag: '일반',
+      title: '협회 사무국 이전 안내 (5월 1일자)',
+      date: '2026.04.18',
+      views: 423,
+    },
+    {
+      id: 5,
+      tag: '중요',
+      title: 'AI 보안 가이드라인 v2.0 배포 안내',
+      date: '2026.04.08',
+      views: 1560,
+    },
+    {
+      id: 6,
+      tag: '일반',
+      title: '제3회 한국 AI 보안 컨퍼런스 사전 등록 안내',
+      date: '2026.03.27',
+      views: 738,
+    },
+  ];
+
+  const resources: ResourceItem[] = [
+    {
+      id: 1,
+      title: 'AI 시스템 보안 가이드라인 v2.0',
+      type: 'PDF',
+      size: '3.2MB',
+      date: '2026.05.10',
+      downloads: 1842,
+    },
+    {
+      id: 2,
+      title: '생성형 AI 보안 위협 대응 체크리스트',
+      type: 'DOC',
+      size: '480KB',
+      date: '2026.04.28',
+      downloads: 956,
+    },
+    {
+      id: 3,
+      title: 'AI 보안 표준화 동향 리포트',
+      type: 'PDF',
+      size: '5.1MB',
+      date: '2026.04.12',
+      downloads: 723,
+    },
+    {
+      id: 4,
+      title: '회원사 보안 진단 자가평가표',
+      type: 'XLS',
+      size: '210KB',
+      date: '2026.03.30',
+      downloads: 612,
+    },
+    {
+      id: 5,
+      title: 'AI 모델 취약점 분석 사례집',
+      type: 'PDF',
+      size: '8.7MB',
+      date: '2026.03.15',
+      downloads: 1102,
+    },
+    {
+      id: 6,
+      title: '협회 양식 자료 모음 (2026년 개정판)',
+      type: 'ZIP',
+      size: '1.4MB',
+      date: '2026.02.28',
+      downloads: 480,
+    },
+  ];
+
+  const gallery: GalleryItem[] = [
+    {
+      id: 1,
+      title: 'AI 보안 컨퍼런스 2026',
+      desc: '국내외 전문가 250명이 참여한 협회 대표 행사',
+      date: '2026.05.14',
+      gradient: 'from-[#2563eb] via-[#1d4ed8] to-[#1e3a8a]',
+    },
+    {
+      id: 2,
+      title: '전문위원회 발족식',
+      desc: '6대 전문위원회 위원장 위촉 및 운영 방향 발표',
+      date: '2026.04.03',
+      gradient: 'from-[#60a5fa] via-[#2563eb] to-[#1d4ed8]',
+    },
+    {
+      id: 3,
+      title: '회원사 네트워킹 데이',
+      desc: '신규 회원사 환영 및 업계 동향 공유의 자리',
+      date: '2026.03.22',
+      gradient: 'from-[#dbeafe] via-[#60a5fa] to-[#2563eb]',
+    },
+    {
+      id: 4,
+      title: 'AI 윤리 라운드테이블',
+      desc: '학계·산업계 전문가 AI 윤리 토론회',
+      date: '2026.03.05',
+      gradient: 'from-[#1e3a8a] via-[#2563eb] to-[#60a5fa]',
+    },
+    {
+      id: 5,
+      title: '국제 표준화 협력 회의',
+      desc: 'ISO/IEC 워킹그룹과의 공동 협력 미팅',
+      date: '2026.02.18',
+      gradient: 'from-[#eff6ff] via-[#93c5fd] to-[#2563eb]',
+    },
+    {
+      id: 6,
+      title: '신년 임원 워크숍',
+      desc: '2026년 협회 사업 방향 설정 및 비전 공유',
+      date: '2026.01.20',
+      gradient: 'from-[#2563eb] via-[#60a5fa] to-[#dbeafe]',
+    },
+  ];
+
+  const tagStyle: Record<NoticeItem['tag'], string> = {
+    중요: 'bg-[#fef2f2] text-[#ef4444] border-red-100',
+    모집: 'bg-[#eff6ff] text-[#2563eb] border-blue-100',
+    교육: 'bg-[#fefce8] text-[#ca8a04] border-yellow-100',
+    일반: 'bg-slate-100 text-slate-600 border-slate-200',
+  };
+
+  const fileTypeStyle: Record<ResourceItem['type'], string> = {
+    PDF: 'bg-[#fef2f2] text-[#ef4444]',
+    DOC: 'bg-[#eff6ff] text-[#2563eb]',
+    XLS: 'bg-[#f0fdf4] text-[#15803d]',
+    ZIP: 'bg-[#fefce8] text-[#ca8a04]',
+  };
+
   return (
-    <main className="min-h-screen bg-[#f2f5fa] text-[#1a2a3a]">
-      {/* HERO */}
-      <section className="relative overflow-hidden bg-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_20%,#2d7ff9_0%,transparent_28%),radial-gradient(circle_at_20%_30%,#dcecff_0%,transparent_35%)] opacity-90" />
-        <div className="absolute right-[-120px] top-[-120px] h-[360px] w-[360px] rounded-full bg-[#207bf3]/20 blur-3xl" />
-        <div className="absolute left-[8%] bottom-[-80px] h-[260px] w-[260px] rounded-full bg-[#9ed2ff]/30 blur-3xl" />
+    <>
+      <Header />
 
-        <div className="relative mx-auto max-w-[1320px] px-10 py-28">
-          <div className="max-w-[720px]">
-            <span className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-[13px] font-bold text-[#1b3f7a] shadow-sm">
-              <ShieldCheck size={16} />
-              News & Resources
-            </span>
+      <main className="min-h-screen bg-[#f7fbff] text-[#0f172a] overflow-hidden">
+        {/* 히어로 섹션 */}
+        <section className="relative min-h-[520px] bg-gradient-to-br from-white via-[#eef8ff] to-[#dbeeff] overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(56,189,248,0.28),transparent_32%),radial-gradient(circle_at_18%_28%,rgba(147,197,253,0.28),transparent_30%)]" />
+          <div className="absolute inset-0 opacity-[0.28] bg-[linear-gradient(rgba(59,130,246,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.12)_1px,transparent_1px)] bg-[size:76px_76px]" />
 
-            <h1 className="mb-6 text-4xl font-black leading-tight tracking-tight md:text-[56px]">
-              자료 및 소식
-            </h1>
+          <div className="relative max-w-[1320px] mx-auto px-6 md:px-10 pt-28 pb-24">
+            <div className="max-w-[820px]">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-blue-100 shadow-sm text-[#2563eb] text-sm font-bold mb-7">
+                <Sparkles size={16} />
+                News &amp; Resources
+              </span>
 
-            <p className="max-w-[560px] break-keep text-[17px] leading-relaxed text-[#5f728a]">
-              한국AI보안협회의 공지사항, 연구 자료, 행사 소식을 한눈에 확인하실 수 있습니다.
-            </p>
+              <h1 className="text-[42px] md:text-[48px] font-black leading-[1.08] tracking-[-0.045em] break-keep text-slate-950">
+                협회의 새로운
+                <br />
+                <span className="text-[#2563eb]">소식과 자료</span>를 만나보세요
+              </h1>
+
+              <p className="mt-8 text-lg md:text-xl text-slate-600 leading-relaxed max-w-[720px] break-keep">
+                공지사항, 연구 자료, 행사 사진까지 한국AI보안협회의 다양한 활동을
+                한곳에서 확인하실 수 있습니다.
+              </p>
+
+              <div className="mt-10 flex flex-wrap gap-4">
+                <a
+                  href="#section-0"
+                  className="inline-flex items-center gap-2 px-7 py-4 rounded-full bg-[#2563eb] text-white font-black hover:bg-[#1d4ed8] transition shadow-[0_14px_36px_rgba(37,99,235,0.28)]"
+                >
+                  공지사항 보기 <ArrowRight size={18} />
+                </a>
+
+                <a
+                  href="#section-1"
+                  className="inline-flex items-center gap-2 px-7 py-4 rounded-full bg-white text-[#2563eb] border border-blue-100 font-bold hover:bg-blue-50 transition shadow-sm"
+                >
+                  자료실 바로가기 <Download size={18} />
+                </a>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* TAB / SEARCH */}
-      <section className="relative z-10 -mt-8">
-        <div className="mx-auto max-w-[1320px] px-10">
-          <div className="rounded-[28px] border border-[#dde4ef] bg-white p-4 shadow-xl shadow-[#1b3f7a]/5">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div className="grid grid-cols-3 gap-2">
-                {['공지사항', '자료실', '갤러리'].map((tab, index) => (
-                  <button
-                    key={tab}
-                    className={`rounded-2xl px-8 py-4 text-[15px] font-bold transition-all ${
-                      index === 0
-                        ? 'bg-[#1b3f7a] text-white shadow-lg shadow-[#1b3f7a]/20'
-                        : 'bg-[#f0f4fb] text-[#5f728a] hover:bg-[#e8eef8] hover:text-[#1b3f7a]'
-                    }`}
+        {/* 본문 콘텐츠 */}
+        <section className="relative py-24">
+          <div className="absolute inset-x-0 top-0 h-52 bg-gradient-to-b from-white to-transparent" />
+
+          <div className="relative max-w-[1320px] mx-auto px-6 md:px-10 grid lg:grid-cols-[300px_1fr] gap-10">
+            <aside className="hidden lg:block">
+              <div className="sticky top-32 rounded-[32px] overflow-hidden bg-white border border-blue-100 shadow-[0_24px_70px_rgba(37,99,235,0.08)]">
+                <div className="p-7 bg-gradient-to-br from-[#eff6ff] to-white border-b border-blue-100">
+                  <p className="text-xs font-black tracking-[0.2em] uppercase text-[#2563eb]">
+                    Contents
+                  </p>
+                  <h2 className="mt-2 text-2xl font-black text-slate-950">자료 및 소식</h2>
+                </div>
+
+                {navItems.map((item, index) => (
+                  <a
+                    key={item}
+                    href={`#section-${index}`}
+                    className="flex items-center justify-between px-7 py-5 text-[15px] font-bold text-slate-600 border-b border-slate-100 last:border-0 hover:bg-[#f0f7ff] hover:text-[#2563eb] transition"
                   >
-                    {tab}
-                  </button>
+                    {item}
+                    <ChevronRight size={16} />
+                  </a>
                 ))}
               </div>
+            </aside>
 
-              <div className="flex items-center gap-3 rounded-2xl border border-[#dde4ef] bg-[#f8fbff] px-5 py-4 lg:w-[360px]">
-                <Search size={20} className="text-[#7a8fa8]" />
-                <input
-                  placeholder="검색어를 입력하세요"
-                  className="w-full bg-transparent text-[14px] outline-none placeholder:text-[#9badc2]"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            <div className="space-y-10">
+              {/* 1. 공지사항 */}
+              <ContentCard id="section-0">
+                <SectionTitle icon={<Megaphone />} label="Notice" title="공지사항" />
 
-      {/* FEATURE NOTICE */}
-      <section className="py-20">
-        <div className="mx-auto max-w-[1320px] px-10">
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-            <article className="group relative overflow-hidden rounded-[36px] bg-[#12366f] p-10 text-white shadow-2xl shadow-[#1b3f7a]/20">
-              <div className="absolute right-[-80px] top-[-80px] h-72 w-72 rounded-full bg-[#2d7ff9]/50 blur-2xl" />
-              <div className="absolute bottom-[-120px] left-[20%] h-80 w-80 rounded-full bg-[#8ecbff]/20 blur-3xl" />
-
-              <div className="relative">
-                <div className="mb-20 flex items-center justify-between">
-                  <span className="rounded-full bg-white/15 px-4 py-2 text-[12px] font-black">
-                    NOTICE
-                  </span>
-                  <Megaphone className="opacity-80" />
-                </div>
-
-                <p className="mb-4 text-[14px] text-white/60">2026.05.14</p>
-                <h2 className="mb-6 max-w-[620px] break-keep text-3xl font-black leading-snug">
-                  2026 한국AI보안협회 정기총회 및 AI 보안 컨퍼런스 개최 안내
-                </h2>
-                <p className="mb-10 max-w-[560px] break-keep text-[15px] leading-relaxed text-white/70">
-                  협회 주요 사업 보고와 함께 AI 보안 기술 동향, 정책 방향, 회원사 네트워킹 프로그램이 진행됩니다.
+                <p className="text-slate-600 leading-loose text-[17px] break-keep mb-10">
+                  협회의 주요 공지 및 안내사항을 확인하실 수 있습니다.
                 </p>
 
-                <button className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-4 text-[14px] font-black text-[#1b3f7a] transition-all group-hover:translate-x-1">
-                  자세히 보기 <ArrowRight size={17} />
-                </button>
-              </div>
-            </article>
+                {/* 검색 */}
+                <div className="mb-7 flex items-center gap-3 rounded-[16px] border border-slate-300 bg-white px-5 py-3.5 focus-within:border-[#2563eb] focus-within:ring-4 focus-within:ring-[#2563eb]/10 transition">
+                  <Search size={18} className="text-slate-400 shrink-0" />
+                  <input
+                    placeholder="공지사항 검색"
+                    className="w-full bg-transparent text-[14px] text-slate-700 outline-none placeholder:text-slate-400"
+                  />
+                </div>
 
-            <div className="grid gap-5">
-              {notices.map((item) => (
-                <article
-                  key={item.title}
-                  className="group flex items-center justify-between rounded-[28px] border border-[#dde4ef] bg-white p-7 transition-all hover:-translate-y-1 hover:shadow-xl"
-                >
+                {/* 공지 리스트 */}
+                <ul className="divide-y divide-slate-100 border-y border-slate-100">
+                  {notices.map((notice) => (
+                    <li key={notice.id}>
+                      <a
+                        href="#"
+                        className="group flex items-center gap-4 py-5 hover:bg-[#f8fbff] transition px-2 -mx-2 rounded-[8px]"
+                      >
+                        {/* 핀 아이콘 */}
+                        <div className="shrink-0 w-8">
+                          {notice.pinned ? (
+                            <div className="w-7 h-7 rounded-lg bg-[#eff6ff] text-[#2563eb] flex items-center justify-center">
+                              <Pin size={13} />
+                            </div>
+                          ) : null}
+                        </div>
+
+                        {/* 태그 */}
+                        <span
+                          className={`shrink-0 inline-flex items-center justify-center min-w-[52px] px-3 py-1 rounded-full text-[11px] font-black tracking-wider border ${tagStyle[notice.tag]}`}
+                        >
+                          {notice.tag}
+                        </span>
+
+                        {/* 제목 */}
+                        <h3 className="flex-1 min-w-0 text-[15px] md:text-[16px] font-bold text-slate-800 group-hover:text-[#2563eb] transition break-keep">
+                          {notice.title}
+                        </h3>
+
+                        {/* 메타 */}
+                        <div className="hidden sm:flex items-center gap-5 shrink-0 text-[12.5px] text-slate-500">
+                          <span className="flex items-center gap-1.5">
+                            <Eye size={13} />
+                            {notice.views.toLocaleString()}
+                          </span>
+                          <span className="flex items-center gap-1.5">
+                            <CalendarDays size={13} />
+                            {notice.date}
+                          </span>
+                        </div>
+
+                        <ChevronRight
+                          size={16}
+                          className="shrink-0 text-slate-300 group-hover:text-[#2563eb] group-hover:translate-x-1 transition-all"
+                        />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* 페이지네이션 */}
+                <div className="mt-10 flex items-center justify-center gap-2">
+                  {['<', '1', '2', '3', '4', '5', '>'].map((p, idx) => {
+                    const isActive = p === '1';
+                    const baseClass =
+                      'inline-flex items-center justify-center w-10 h-10 rounded-xl text-[14px] font-bold transition';
+                    const activeClass = 'bg-[#2563eb] text-white shadow-[0_8px_20px_rgba(37,99,235,0.25)]';
+                    const inactiveClass = 'bg-white text-slate-600 border border-slate-200 hover:border-[#2563eb] hover:text-[#2563eb]';
+                    return (
+                      <button
+                        key={`${p}-${idx}`}
+                        className={`${baseClass} ${isActive ? activeClass : inactiveClass}`}
+                      >
+                        {p}
+                      </button>
+                    );
+                  })}
+                </div>
+              </ContentCard>
+
+              {/* 2. 자료실 */}
+              <ContentCard id="section-1">
+                <SectionTitle icon={<FileText />} label="Resources" title="자료실" />
+
+                <p className="text-slate-600 leading-loose text-[17px] break-keep mb-10">
+                  협회에서 발간한 가이드라인, 리포트, 양식 자료 등을 다운로드 받으실
+                  수 있습니다.
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-5">
+                  {resources.map((res) => (
+                    <article
+                      key={res.id}
+                      className="group p-7 rounded-[26px] bg-[#f8fbff] border border-blue-100 hover:bg-white hover:-translate-y-1 hover:shadow-[0_22px_56px_rgba(37,99,235,0.12)] transition flex flex-col"
+                    >
+                      <div className="flex items-start justify-between mb-6">
+                        <div className="w-14 h-14 rounded-2xl bg-white text-[#2563eb] border border-blue-100 flex items-center justify-center">
+                          <FileText size={22} />
+                        </div>
+                        <span
+                          className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-black tracking-wider ${fileTypeStyle[res.type]}`}
+                        >
+                          {res.type}
+                        </span>
+                      </div>
+
+                      <h3 className="text-[17px] font-black text-slate-950 mb-3 break-keep group-hover:text-[#2563eb] transition flex-1">
+                        {res.title}
+                      </h3>
+
+                      <div className="flex items-center gap-4 text-[12px] text-slate-500 mb-5">
+                        <span className="flex items-center gap-1.5">
+                          <CalendarDays size={12} />
+                          {res.date}
+                        </span>
+                        <span className="text-slate-300">|</span>
+                        <span>{res.size}</span>
+                        <span className="text-slate-300">|</span>
+                        <span>{res.downloads.toLocaleString()}회</span>
+                      </div>
+
+                      <button className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-2xl bg-white text-[#2563eb] border border-blue-100 font-bold text-[14px] hover:bg-[#2563eb] hover:text-white hover:border-[#2563eb] transition">
+                        다운로드 <Download size={15} />
+                      </button>
+                    </article>
+                  ))}
+                </div>
+
+                <div className="mt-10 text-center">
+                  <a
+                    href="#"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-[#2563eb] border border-blue-100 font-bold hover:bg-[#eff6ff] transition text-[14px]"
+                  >
+                    전체 자료 보기 <ArrowRight size={15} />
+                  </a>
+                </div>
+              </ContentCard>
+
+              {/* 3. 갤러리 */}
+              <ContentCard id="section-2">
+                <SectionTitle icon={<ImageIcon />} label="Gallery" title="갤러리" />
+
+                <p className="text-slate-600 leading-loose text-[17px] break-keep mb-10">
+                  협회 주요 행사 및 활동의 생생한 현장을 사진으로 만나보세요.
+                </p>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {gallery.map((item) => (
+                    <article
+                      key={item.id}
+                      className="group rounded-[26px] overflow-hidden bg-white border border-blue-100 hover:-translate-y-2 hover:shadow-[0_28px_70px_rgba(37,99,235,0.18)] transition cursor-pointer"
+                    >
+                      <div className={`relative h-56 bg-gradient-to-br ${item.gradient} overflow-hidden`}>
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(255,255,255,0.5),transparent_30%)]" />
+                        <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(255,255,255,0.4)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.4)_1px,transparent_1px)] bg-[size:32px_32px]" />
+
+                        <div className="absolute bottom-5 left-5 w-12 h-12 rounded-2xl bg-white/95 text-[#2563eb] backdrop-blur flex items-center justify-center shadow-lg">
+                          <ImageIcon size={20} />
+                        </div>
+
+                        <div className="absolute top-5 right-5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur text-[11px] font-black text-[#2563eb] shadow-sm">
+                          <CalendarDays size={11} />
+                          {item.date}
+                        </div>
+                      </div>
+
+                      <div className="p-6">
+                        <h3 className="text-[17px] font-black text-slate-950 mb-2 group-hover:text-[#2563eb] transition break-keep">
+                          {item.title}
+                        </h3>
+                        <p className="text-[13.5px] text-slate-500 leading-relaxed break-keep">
+                          {item.desc}
+                        </p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+
+                <div className="mt-10 text-center">
+                  <a
+                    href="#"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-[#2563eb] border border-blue-100 font-bold hover:bg-[#eff6ff] transition text-[14px]"
+                  >
+                    갤러리 전체보기 <ArrowRight size={15} />
+                  </a>
+                </div>
+              </ContentCard>
+
+              {/* CTA */}
+              <section className="relative rounded-[40px] p-9 md:p-14 overflow-hidden bg-gradient-to-br from-[#1b3f7a] via-[#1d4ed8] to-[#2563eb] text-white shadow-[0_24px_80px_rgba(37,99,235,0.25)]">
+                <div className="absolute right-0 top-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
+                <div className="absolute left-0 bottom-0 w-72 h-72 bg-white/5 rounded-full translate-y-1/3 -translate-x-1/3" />
+
+                <div className="relative z-10 grid md:grid-cols-[1.5fr_1fr] gap-10 items-center">
                   <div>
-                    <div className="mb-3 flex items-center gap-3">
-                      <span className="rounded-full bg-[#e8eef8] px-3 py-1 text-[11px] font-black text-[#1b3f7a]">
-                        {item.tag}
-                      </span>
-                      <span className="text-[13px] text-[#7a8fa8]">{item.date}</span>
-                    </div>
-                    <h3 className="break-keep text-[18px] font-bold group-hover:text-[#1b3f7a]">
-                      {item.title}
-                    </h3>
+                    <span className="text-[12px] font-black tracking-[0.22em] uppercase text-white/70">
+                      Newsletter
+                    </span>
+                    <h2 className="text-3xl md:text-4xl font-black mt-2 mb-5 tracking-[-0.03em] break-keep">
+                      협회 소식을 메일로 받아보세요
+                    </h2>
+                    <p className="text-white/80 leading-relaxed break-keep">
+                      주요 공지, 신규 자료, 행사 일정을 월 1회 뉴스레터로 전해드립니다.
+                    </p>
                   </div>
-                  <ChevronRight className="text-[#9badc2] group-hover:text-[#1b3f7a]" />
-                </article>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* RESOURCES */}
-      <section className="bg-white py-24">
-        <div className="mx-auto max-w-[1320px] px-10">
-          <div className="mb-12 flex items-end justify-between">
-            <div>
-              <p className="mb-2 text-[13px] font-black uppercase tracking-widest text-[#2a5298]">
-                Resources
-              </p>
-              <h2 className="text-3xl font-black">자료실</h2>
-            </div>
-            <button className="flex items-center gap-2 text-[14px] font-bold text-[#1b3f7a]">
-              전체보기 <ArrowRight size={16} />
-            </button>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            {resources.map((item) => (
-              <article
-                key={item.title}
-                className="group rounded-[32px] border border-[#dde4ef] bg-[#f8fbff] p-8 transition-all hover:-translate-y-2 hover:bg-white hover:shadow-2xl"
-              >
-                <div className="mb-12 flex items-start justify-between">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#e2efff] text-[#1b3f7a]">
-                    <FileText />
-                  </div>
-                  <span className="rounded-full bg-white px-3 py-1 text-[11px] font-black text-[#2a5298]">
-                    {item.type}
-                  </span>
-                </div>
-
-                <h3 className="mb-5 break-keep text-[20px] font-black leading-snug group-hover:text-[#1b3f7a]">
-                  {item.title}
-                </h3>
-
-                <div className="flex items-center justify-between border-t border-[#dde4ef] pt-5">
-                  <span className="flex items-center gap-2 text-[13px] text-[#7a8fa8]">
-                    <CalendarDays size={15} />
-                    {item.date}
-                  </span>
-                  <Download size={18} className="text-[#1b3f7a]" />
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* GALLERY */}
-      <section className="py-24">
-        <div className="mx-auto max-w-[1320px] px-10">
-          <div className="mb-12 flex items-end justify-between">
-            <div>
-              <p className="mb-2 text-[13px] font-black uppercase tracking-widest text-[#2a5298]">
-                Gallery
-              </p>
-              <h2 className="text-3xl font-black">갤러리</h2>
-            </div>
-            <button className="flex items-center gap-2 text-[14px] font-bold text-[#1b3f7a]">
-              전체보기 <ArrowRight size={16} />
-            </button>
-          </div>
-
-          <div className="grid gap-7 md:grid-cols-3">
-            {gallery.map((item, index) => (
-              <article
-                key={item.title}
-                className="group overflow-hidden rounded-[32px] border border-[#dde4ef] bg-white shadow-sm transition-all hover:-translate-y-2 hover:shadow-2xl"
-              >
-                <div
-                  className={`relative h-60 ${
-                    index === 0
-                      ? 'bg-gradient-to-br from-[#1b3f7a] via-[#2d7ff9] to-[#bfe4ff]'
-                      : index === 1
-                      ? 'bg-gradient-to-br from-[#dcecff] via-[#5da5ff] to-[#1b3f7a]'
-                      : 'bg-gradient-to-br from-[#eaf5ff] via-[#9ed2ff] to-[#2d7ff9]'
-                  }`}
-                >
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(255,255,255,0.9),transparent_22%)]" />
-                  <div className="absolute bottom-5 left-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/90 text-[#1b3f7a] backdrop-blur">
-                    <ImageIcon />
+                  <div className="flex flex-col gap-3">
+                    <a
+                      href="/contact"
+                      className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-white text-[#2563eb] rounded-full font-black hover:bg-[#dce8ff] transition text-[15px]"
+                    >
+                      뉴스레터 구독하기 <ArrowRight size={16} />
+                    </a>
                   </div>
                 </div>
-
-                <div className="p-7">
-                  <p className="mb-3 text-[13px] text-[#7a8fa8]">{item.date}</p>
-                  <h3 className="break-keep text-[19px] font-black group-hover:text-[#1b3f7a]">
-                    {item.title}
-                  </h3>
-                </div>
-              </article>
-            ))}
+              </section>
+            </div>
           </div>
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
+    </>
+  );
+}
+
+/* ─── 헬퍼 컴포넌트 ─── */
+
+function ContentCard({
+  id,
+  children,
+}: {
+  id: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      id={id}
+      className="relative bg-white rounded-[40px] p-9 md:p-14 border border-blue-100 shadow-[0_24px_80px_rgba(37,99,235,0.08)] overflow-hidden"
+    >
+      <div className="relative z-10">{children}</div>
+    </section>
+  );
+}
+
+function SectionTitle({
+  icon,
+  label,
+  title,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  title: string;
+}) {
+  return (
+    <div className="mb-9">
+      <div className="w-[60px] h-[60px] rounded-[22px] flex items-center justify-center mb-5 bg-[#eff6ff] text-[#2563eb] border border-blue-100">
+        {icon}
+      </div>
+
+      <span className="text-[12px] font-black tracking-[0.22em] uppercase text-[#2563eb]">
+        {label}
+      </span>
+
+      <h2 className="text-3xl md:text-4xl font-black mt-2 tracking-[-0.03em] text-slate-950">
+        {title}
+      </h2>
+    </div>
   );
 }

@@ -11,8 +11,12 @@ import {
   Search,
   Pin,
   Eye,
+  Pencil,
 } from 'lucide-react';
 import Header from '@/components/Header';
+import Link from 'next/link';
+import ContentCard from '@/components/news/ContentCard';
+import SectionTitle from '@/components/news/SectionTitle';
 
 type NoticeItem = {
   id: number;
@@ -282,13 +286,21 @@ export default function NewsPage() {
                   협회의 주요 공지 및 안내사항을 확인하실 수 있습니다.
                 </p>
 
-                {/* 검색 */}
-                <div className="mb-7 flex items-center gap-3 rounded-[16px] border border-slate-300 bg-white px-5 py-3.5 focus-within:border-[#2563eb] focus-within:ring-4 focus-within:ring-[#2563eb]/10 transition">
-                  <Search size={18} className="text-slate-400 shrink-0" />
-                  <input
-                    placeholder="공지사항 검색"
-                    className="w-full bg-transparent text-[14px] text-slate-700 outline-none placeholder:text-slate-400"
-                  />
+                {/* 검색 + 글쓰기 */}
+                <div className="mb-7 flex flex-col sm:flex-row gap-3">
+                  <div className="flex-1 flex items-center gap-3 rounded-[16px] border border-slate-300 bg-white px-5 py-3.5 focus-within:border-[#2563eb] focus-within:ring-4 focus-within:ring-[#2563eb]/10 transition">
+                    <Search size={18} className="text-slate-400 shrink-0" />
+                    <input
+                      placeholder="공지사항 검색"
+                      className="w-full bg-transparent text-[14px] text-slate-700 outline-none placeholder:text-slate-400"
+                    />
+                  </div>
+                  <Link
+                    href="/news/notice/write"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-[16px] bg-[#2563eb] text-white font-bold text-[14px] hover:bg-[#1d4ed8] transition shadow-[0_10px_28px_rgba(37,99,235,0.25)] whitespace-nowrap"
+                  >
+                    <Pencil size={16} /> 글쓰기
+                  </Link>
                 </div>
 
                 {/* 공지 리스트 */}
@@ -411,7 +423,7 @@ export default function NewsPage() {
 
                 <div className="mt-10 text-center">
                   <a
-                    href="#"
+                    href="/news/resources"
                     className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-[#2563eb] border border-blue-100 font-bold hover:bg-[#eff6ff] transition text-[14px]"
                   >
                     전체 자료 보기 <ArrowRight size={15} />
@@ -461,7 +473,7 @@ export default function NewsPage() {
 
                 <div className="mt-10 text-center">
                   <a
-                    href="#"
+                    href="/news/gallery"
                     className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-[#2563eb] border border-blue-100 font-bold hover:bg-[#eff6ff] transition text-[14px]"
                   >
                     갤러리 전체보기 <ArrowRight size={15} />
@@ -502,50 +514,5 @@ export default function NewsPage() {
         </section>
       </main>
     </>
-  );
-}
-
-/* ─── 헬퍼 컴포넌트 ─── */
-
-function ContentCard({
-  id,
-  children,
-}: {
-  id: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section
-      id={id}
-      className="relative bg-white rounded-[40px] p-9 md:p-14 border border-blue-100 shadow-[0_24px_80px_rgba(37,99,235,0.08)] overflow-hidden"
-    >
-      <div className="relative z-10">{children}</div>
-    </section>
-  );
-}
-
-function SectionTitle({
-  icon,
-  label,
-  title,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  title: string;
-}) {
-  return (
-    <div className="mb-9">
-      <div className="w-[60px] h-[60px] rounded-[22px] flex items-center justify-center mb-5 bg-[#eff6ff] text-[#2563eb] border border-blue-100">
-        {icon}
-      </div>
-
-      <span className="text-[12px] font-black tracking-[0.22em] uppercase text-[#2563eb]">
-        {label}
-      </span>
-
-      <h2 className="text-3xl md:text-4xl font-black mt-2 tracking-[-0.03em] text-slate-950">
-        {title}
-      </h2>
-    </div>
   );
 }

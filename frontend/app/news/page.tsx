@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import {
   ArrowRight,
   Sparkles,
@@ -17,9 +19,10 @@ import Header from '@/components/Header';
 import Link from 'next/link';
 import ContentCard from '@/components/news/ContentCard';
 import SectionTitle from '@/components/news/SectionTitle';
+import { fetchGallery, fetchNotices, fetchResources } from '@/lib/api';
 
 type NoticeItem = {
-  id: number;
+  id: string;
   tag: '중요' | '모집' | '교육' | '일반';
   title: string;
   date: string;
@@ -28,7 +31,7 @@ type NoticeItem = {
 };
 
 type ResourceItem = {
-  id: number;
+  id: string;
   title: string;
   type: 'PDF' | 'DOC' | 'XLS' | 'ZIP';
   size: string;
@@ -37,157 +40,116 @@ type ResourceItem = {
 };
 
 type GalleryItem = {
-  id: number;
+  id: string;
   title: string;
   desc: string;
   date: string;
   gradient: string;
 };
 
+type NoticeApiItem = {
+  id: string;
+  tag?: string;
+  title?: string;
+  date?: string;
+  views?: number;
+  pinned?: boolean;
+};
+
+type ResourceApiItem = {
+  id: string;
+  title?: string;
+  type?: string;
+  size?: string;
+  date?: string;
+  downloads?: number;
+};
+
+type GalleryApiItem = {
+  id: string;
+  title?: string;
+  description?: string;
+  date?: string;
+};
+
 export default function NewsPage() {
   const navItems = ['공지사항', '자료실', '갤러리'];
+  const [notices, setNotices] = useState<NoticeItem[]>([]);
+  const [resources, setResources] = useState<ResourceItem[]>([]);
+  const [gallery, setGallery] = useState<GalleryItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const notices: NoticeItem[] = [
-    {
-      id: 1,
-      tag: '중요',
-      title: '2026 한국AI보안협회 정기총회 및 AI 보안 컨퍼런스 개최 안내',
-      date: '2026.05.14',
-      views: 1284,
-      pinned: true,
-    },
-    {
-      id: 2,
-      tag: '모집',
-      title: 'AI 보안 전문위원회 신규 위원 모집 공고',
-      date: '2026.05.02',
-      views: 892,
-    },
-    {
-      id: 3,
-      tag: '교육',
-      title: '회원사 대상 AI 보안 교육 프로그램 안내',
-      date: '2026.04.21',
-      views: 567,
-    },
-    {
-      id: 4,
-      tag: '일반',
-      title: '협회 사무국 이전 안내 (5월 1일자)',
-      date: '2026.04.18',
-      views: 423,
-    },
-    {
-      id: 5,
-      tag: '중요',
-      title: 'AI 보안 가이드라인 v2.0 배포 안내',
-      date: '2026.04.08',
-      views: 1560,
-    },
-    {
-      id: 6,
-      tag: '일반',
-      title: '제3회 한국 AI 보안 컨퍼런스 사전 등록 안내',
-      date: '2026.03.27',
-      views: 738,
-    },
-  ];
+  useEffect(() => {
+    let isMounted = true;
 
-  const resources: ResourceItem[] = [
-    {
-      id: 1,
-      title: 'AI 시스템 보안 가이드라인 v2.0',
-      type: 'PDF',
-      size: '3.2MB',
-      date: '2026.05.10',
-      downloads: 1842,
-    },
-    {
-      id: 2,
-      title: '생성형 AI 보안 위협 대응 체크리스트',
-      type: 'DOC',
-      size: '480KB',
-      date: '2026.04.28',
-      downloads: 956,
-    },
-    {
-      id: 3,
-      title: 'AI 보안 표준화 동향 리포트',
-      type: 'PDF',
-      size: '5.1MB',
-      date: '2026.04.12',
-      downloads: 723,
-    },
-    {
-      id: 4,
-      title: '회원사 보안 진단 자가평가표',
-      type: 'XLS',
-      size: '210KB',
-      date: '2026.03.30',
-      downloads: 612,
-    },
-    {
-      id: 5,
-      title: 'AI 모델 취약점 분석 사례집',
-      type: 'PDF',
-      size: '8.7MB',
-      date: '2026.03.15',
-      downloads: 1102,
-    },
-    {
-      id: 6,
-      title: '협회 양식 자료 모음 (2026년 개정판)',
-      type: 'ZIP',
-      size: '1.4MB',
-      date: '2026.02.28',
-      downloads: 480,
-    },
-  ];
+    const loadData = async () => {
+      try {
+        const [noticeResult, resourceResult, galleryResult] = await Promise.all([
+          fetchNotices(),
+          fetchResources(),
+          fetchGallery(),
+        ]);
 
-  const gallery: GalleryItem[] = [
-    {
-      id: 1,
-      title: 'AI 보안 컨퍼런스 2026',
-      desc: '국내외 전문가 250명이 참여한 협회 대표 행사',
-      date: '2026.05.14',
-      gradient: 'from-[#2563eb] via-[#1d4ed8] to-[#1e3a8a]',
-    },
-    {
-      id: 2,
-      title: '전문위원회 발족식',
-      desc: '6대 전문위원회 위원장 위촉 및 운영 방향 발표',
-      date: '2026.04.03',
-      gradient: 'from-[#60a5fa] via-[#2563eb] to-[#1d4ed8]',
-    },
-    {
-      id: 3,
-      title: '회원사 네트워킹 데이',
-      desc: '신규 회원사 환영 및 업계 동향 공유의 자리',
-      date: '2026.03.22',
-      gradient: 'from-[#dbeafe] via-[#60a5fa] to-[#2563eb]',
-    },
-    {
-      id: 4,
-      title: 'AI 윤리 라운드테이블',
-      desc: '학계·산업계 전문가 AI 윤리 토론회',
-      date: '2026.03.05',
-      gradient: 'from-[#1e3a8a] via-[#2563eb] to-[#60a5fa]',
-    },
-    {
-      id: 5,
-      title: '국제 표준화 협력 회의',
-      desc: 'ISO/IEC 워킹그룹과의 공동 협력 미팅',
-      date: '2026.02.18',
-      gradient: 'from-[#eff6ff] via-[#93c5fd] to-[#2563eb]',
-    },
-    {
-      id: 6,
-      title: '신년 임원 워크숍',
-      desc: '2026년 협회 사업 방향 설정 및 비전 공유',
-      date: '2026.01.20',
-      gradient: 'from-[#2563eb] via-[#60a5fa] to-[#dbeafe]',
-    },
-  ];
+        if (!isMounted) {
+          return;
+        }
+
+        const normalizedNotices = (noticeResult.notices || []).map((item, index) => ({
+          id: String(item.id ?? index + 1),
+          tag: String(item.tag ?? '일반') as NoticeItem['tag'],
+          title: String(item.title ?? '제목 없음'),
+          date: String(item.date ?? '-'),
+          views: Number(item.views ?? 0),
+          pinned: Boolean(item.pinned),
+        }));
+
+        const normalizedResources = (resourceResult.resources || []).map((item, index) => ({
+          id: String(item.id ?? index + 1),
+          title: String(item.title ?? '제목 없음'),
+          type: String(item.type ?? 'PDF') as ResourceItem['type'],
+          size: String(item.size ?? '0KB'),
+          date: String(item.date ?? '-'),
+          downloads: Number(item.downloads ?? 0),
+        }));
+
+        const gradientPool = [
+          'from-[#2563eb] via-[#1d4ed8] to-[#1e3a8a]',
+          'from-[#60a5fa] via-[#2563eb] to-[#1d4ed8]',
+          'from-[#dbeafe] via-[#60a5fa] to-[#2563eb]',
+          'from-[#1e3a8a] via-[#2563eb] to-[#60a5fa]',
+          'from-[#eff6ff] via-[#93c5fd] to-[#2563eb]',
+          'from-[#2563eb] via-[#60a5fa] to-[#dbeafe]',
+        ];
+
+        const normalizedGallery = (galleryResult.gallery || []).map((item, index) => ({
+          id: String(item.id ?? index + 1),
+          title: String(item.title ?? '제목 없음'),
+          desc: String(item.description ?? '설명이 없습니다.'),
+          date: String(item.date ?? '-'),
+          gradient: gradientPool[index % gradientPool.length],
+        }));
+
+        setNotices(normalizedNotices);
+        setResources(normalizedResources);
+        setGallery(normalizedGallery);
+        setErrorMessage(null);
+      } catch (error) {
+        if (isMounted) {
+          setErrorMessage(error instanceof Error ? error.message : '데이터를 불러오지 못했습니다.');
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const tagStyle: Record<NoticeItem['tag'], string> = {
     중요: 'bg-[#fef2f2] text-[#ef4444] border-red-100',
@@ -303,55 +265,60 @@ export default function NewsPage() {
                   </Link>
                 </div>
 
-                {/* 공지 리스트 */}
-                <ul className="divide-y divide-slate-100 border-y border-slate-100">
-                  {notices.map((notice) => (
-                    <li key={notice.id}>
-                      <a
-                        href="#"
-                        className="group flex items-center gap-4 py-5 hover:bg-[#f8fbff] transition px-2 -mx-2 rounded-[8px]"
-                      >
-                        {/* 핀 아이콘 */}
-                        <div className="shrink-0 w-8">
-                          {notice.pinned ? (
-                            <div className="w-7 h-7 rounded-lg bg-[#eff6ff] text-[#2563eb] flex items-center justify-center">
-                              <Pin size={13} />
-                            </div>
-                          ) : null}
-                        </div>
-
-                        {/* 태그 */}
-                        <span
-                          className={`shrink-0 inline-flex items-center justify-center min-w-[52px] px-3 py-1 rounded-full text-[11px] font-black tracking-wider border ${tagStyle[notice.tag]}`}
+                {isLoading ? (
+                  <p className="text-slate-500">공지사항을 불러오는 중입니다...</p>
+                ) : errorMessage ? (
+                  <p className="text-red-500">{errorMessage}</p>
+                ) : (
+                  <ul className="divide-y divide-slate-100 border-y border-slate-100">
+                    {notices.map((notice) => (
+                      <li key={notice.id}>
+                        <a
+                          href="#"
+                          className="group flex items-center gap-4 py-5 hover:bg-[#f8fbff] transition px-2 -mx-2 rounded-[8px]"
                         >
-                          {notice.tag}
-                        </span>
+                          {/* 핀 아이콘 */}
+                          <div className="shrink-0 w-8">
+                            {notice.pinned ? (
+                              <div className="w-7 h-7 rounded-lg bg-[#eff6ff] text-[#2563eb] flex items-center justify-center">
+                                <Pin size={13} />
+                              </div>
+                            ) : null}
+                          </div>
 
-                        {/* 제목 */}
-                        <h3 className="flex-1 min-w-0 text-[15px] md:text-[16px] font-bold text-slate-800 group-hover:text-[#2563eb] transition break-keep">
-                          {notice.title}
-                        </h3>
-
-                        {/* 메타 */}
-                        <div className="hidden sm:flex items-center gap-5 shrink-0 text-[12.5px] text-slate-500">
-                          <span className="flex items-center gap-1.5">
-                            <Eye size={13} />
-                            {notice.views.toLocaleString()}
+                          {/* 태그 */}
+                          <span
+                            className={`shrink-0 inline-flex items-center justify-center min-w-[52px] px-3 py-1 rounded-full text-[11px] font-black tracking-wider border ${tagStyle[notice.tag]}`}
+                          >
+                            {notice.tag}
                           </span>
-                          <span className="flex items-center gap-1.5">
-                            <CalendarDays size={13} />
-                            {notice.date}
-                          </span>
-                        </div>
 
-                        <ChevronRight
-                          size={16}
-                          className="shrink-0 text-slate-300 group-hover:text-[#2563eb] group-hover:translate-x-1 transition-all"
-                        />
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+                          {/* 제목 */}
+                          <h3 className="flex-1 min-w-0 text-[15px] md:text-[16px] font-bold text-slate-800 group-hover:text-[#2563eb] transition break-keep">
+                            {notice.title}
+                          </h3>
+
+                          {/* 메타 */}
+                          <div className="hidden sm:flex items-center gap-5 shrink-0 text-[12.5px] text-slate-500">
+                            <span className="flex items-center gap-1.5">
+                              <Eye size={13} />
+                              {notice.views.toLocaleString()}
+                            </span>
+                            <span className="flex items-center gap-1.5">
+                              <CalendarDays size={13} />
+                              {notice.date}
+                            </span>
+                          </div>
+
+                          <ChevronRight
+                            size={16}
+                            className="shrink-0 text-slate-300 group-hover:text-[#2563eb] group-hover:translate-x-1 transition-all"
+                          />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
                 {/* 페이지네이션 */}
                 <div className="mt-10 flex items-center justify-center gap-2">
@@ -382,44 +349,53 @@ export default function NewsPage() {
                   수 있습니다.
                 </p>
 
-                <div className="grid md:grid-cols-2 gap-5">
-                  {resources.map((res) => (
-                    <article
-                      key={res.id}
-                      className="group p-7 rounded-[26px] bg-[#f8fbff] border border-blue-100 hover:bg-white hover:-translate-y-1 hover:shadow-[0_22px_56px_rgba(37,99,235,0.12)] transition flex flex-col"
-                    >
-                      <div className="flex items-start justify-between mb-6">
-                        <div className="w-14 h-14 rounded-2xl bg-white text-[#2563eb] border border-blue-100 flex items-center justify-center">
-                          <FileText size={22} />
+                {isLoading ? (
+                  <p className="text-slate-500">자료를 불러오는 중입니다...</p>
+                ) : errorMessage ? (
+                  <p className="text-red-500">{errorMessage}</p>
+                ) : (
+                  <div className="grid md:grid-cols-2 gap-5">
+                    {resources.map((res) => (
+                      <article
+                        key={res.id}
+                        className="group p-7 rounded-[26px] bg-[#f8fbff] border border-blue-100 hover:bg-white hover:-translate-y-1 hover:shadow-[0_22px_56px_rgba(37,99,235,0.12)] transition flex flex-col"
+                      >
+                        <div className="flex items-start justify-between mb-6">
+                          <div className="w-14 h-14 rounded-2xl bg-white text-[#2563eb] border border-blue-100 flex items-center justify-center">
+                            <FileText size={22} />
+                          </div>
+                          <span
+                            className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-black tracking-wider ${fileTypeStyle[res.type]}`}
+                          >
+                            {res.type}
+                          </span>
                         </div>
-                        <span
-                          className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-black tracking-wider ${fileTypeStyle[res.type]}`}
+
+                        <h3 className="text-[17px] font-black text-slate-950 mb-3 break-keep group-hover:text-[#2563eb] transition flex-1">
+                          {res.title}
+                        </h3>
+
+                        <div className="flex items-center gap-4 text-[12px] text-slate-500 mb-5">
+                          <span className="flex items-center gap-1.5">
+                            <CalendarDays size={12} />
+                            {res.date}
+                          </span>
+                          <span className="text-slate-300">|</span>
+                          <span>{res.size}</span>
+                          <span className="text-slate-300">|</span>
+                          <span>{res.downloads.toLocaleString()}회</span>
+                        </div>
+
+                        <a
+                          href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api'}/resources/${res.id}/download`}
+                          className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-2xl bg-white text-[#2563eb] border border-blue-100 font-bold text-[14px] hover:bg-[#2563eb] hover:text-white hover:border-[#2563eb] transition"
                         >
-                          {res.type}
-                        </span>
-                      </div>
-
-                      <h3 className="text-[17px] font-black text-slate-950 mb-3 break-keep group-hover:text-[#2563eb] transition flex-1">
-                        {res.title}
-                      </h3>
-
-                      <div className="flex items-center gap-4 text-[12px] text-slate-500 mb-5">
-                        <span className="flex items-center gap-1.5">
-                          <CalendarDays size={12} />
-                          {res.date}
-                        </span>
-                        <span className="text-slate-300">|</span>
-                        <span>{res.size}</span>
-                        <span className="text-slate-300">|</span>
-                        <span>{res.downloads.toLocaleString()}회</span>
-                      </div>
-
-                      <button className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-2xl bg-white text-[#2563eb] border border-blue-100 font-bold text-[14px] hover:bg-[#2563eb] hover:text-white hover:border-[#2563eb] transition">
-                        다운로드 <Download size={15} />
-                      </button>
-                    </article>
-                  ))}
-                </div>
+                          다운로드 <Download size={15} />
+                        </a>
+                      </article>
+                    ))}
+                  </div>
+                )}
 
                 <div className="mt-10 text-center">
                   <a
@@ -439,37 +415,43 @@ export default function NewsPage() {
                   협회 주요 행사 및 활동의 생생한 현장을 사진으로 만나보세요.
                 </p>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {gallery.map((item) => (
-                    <article
-                      key={item.id}
-                      className="group rounded-[26px] overflow-hidden bg-white border border-blue-100 hover:-translate-y-2 hover:shadow-[0_28px_70px_rgba(37,99,235,0.18)] transition cursor-pointer"
-                    >
-                      <div className={`relative h-56 bg-gradient-to-br ${item.gradient} overflow-hidden`}>
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(255,255,255,0.5),transparent_30%)]" />
-                        <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(255,255,255,0.4)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.4)_1px,transparent_1px)] bg-[size:32px_32px]" />
+                {isLoading ? (
+                  <p className="text-slate-500">갤러리를 불러오는 중입니다...</p>
+                ) : errorMessage ? (
+                  <p className="text-red-500">{errorMessage}</p>
+                ) : (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {gallery.map((item) => (
+                      <article
+                        key={item.id}
+                        className="group rounded-[26px] overflow-hidden bg-white border border-blue-100 hover:-translate-y-2 hover:shadow-[0_28px_70px_rgba(37,99,235,0.18)] transition cursor-pointer"
+                      >
+                        <div className={`relative h-56 bg-gradient-to-br ${item.gradient} overflow-hidden`}>
+                          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(255,255,255,0.5),transparent_30%)]" />
+                          <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(255,255,255,0.4)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.4)_1px,transparent_1px)] bg-[size:32px_32px]" />
 
-                        <div className="absolute bottom-5 left-5 w-12 h-12 rounded-2xl bg-white/95 text-[#2563eb] backdrop-blur flex items-center justify-center shadow-lg">
-                          <ImageIcon size={20} />
+                          <div className="absolute bottom-5 left-5 w-12 h-12 rounded-2xl bg-white/95 text-[#2563eb] backdrop-blur flex items-center justify-center shadow-lg">
+                            <ImageIcon size={20} />
+                          </div>
+
+                          <div className="absolute top-5 right-5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur text-[11px] font-black text-[#2563eb] shadow-sm">
+                            <CalendarDays size={11} />
+                            {item.date}
+                          </div>
                         </div>
 
-                        <div className="absolute top-5 right-5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur text-[11px] font-black text-[#2563eb] shadow-sm">
-                          <CalendarDays size={11} />
-                          {item.date}
+                        <div className="p-6">
+                          <h3 className="text-[17px] font-black text-slate-950 mb-2 group-hover:text-[#2563eb] transition break-keep">
+                            {item.title}
+                          </h3>
+                          <p className="text-[13.5px] text-slate-500 leading-relaxed break-keep">
+                            {item.desc}
+                          </p>
                         </div>
-                      </div>
-
-                      <div className="p-6">
-                        <h3 className="text-[17px] font-black text-slate-950 mb-2 group-hover:text-[#2563eb] transition break-keep">
-                          {item.title}
-                        </h3>
-                        <p className="text-[13.5px] text-slate-500 leading-relaxed break-keep">
-                          {item.desc}
-                        </p>
-                      </div>
-                    </article>
-                  ))}
-                </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
 
                 <div className="mt-10 text-center">
                   <a

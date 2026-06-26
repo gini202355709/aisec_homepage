@@ -19,6 +19,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import Header from '@/components/Header';
+import { createContact } from '@/lib/api';
 
 type InquiryType =
   | 'membership'
@@ -124,6 +125,7 @@ export default function ContactPage() {
   });
 
   const [status, setStatus] = useState<SubmitStatus>('idle');
+  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -143,16 +145,41 @@ export default function ContactPage() {
     e.preventDefault();
 
     if (!form.agree) {
-      alert('개인정보 수집 및 이용에 동의해주세요.');
+      setSubmitMessage('개인정보 수집 및 이용에 동의해주세요.');
       return;
     }
 
     setStatus('submitting');
+    setSubmitMessage(null);
 
-    // 실제 API 연동 전까지는 임시로 시뮬레이션
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+    try {
+      await createContact({
+        inquiryType: form.inquiryType,
+        name: form.name,
+        affiliation: form.affiliation,
+        email: form.email,
+        phone: form.phone,
+        title: form.title,
+        message: form.message,
+        agree: form.agree,
+      });
 
-    setStatus('success');
+      setStatus('success');
+      setSubmitMessage('문의가 정상적으로 접수되었습니다. 빠른 시일 내 답변드리겠습니다.');
+      setForm({
+        inquiryType: 'membership',
+        name: '',
+        affiliation: '',
+        email: '',
+        phone: '',
+        title: '',
+        message: '',
+        agree: false,
+      });
+    } catch (error) {
+      setStatus('idle');
+      setSubmitMessage(error instanceof Error ? error.message : '문의 접수 중 오류가 발생했습니다.');
+    }
   };
 
   const handleReset = () => {
@@ -167,6 +194,7 @@ export default function ContactPage() {
       agree: false,
     });
     setStatus('idle');
+    setSubmitMessage(null);
   };
 
   return (
@@ -445,6 +473,12 @@ export default function ContactPage() {
                     </div>
 
                     {/* 제출 버튼 */}
+                    {submitMessage ? (
+                      <p className="text-sm text-emerald-600">
+                        {submitMessage}
+                      </p>
+                    ) : null}
+
                     <div className="flex flex-col sm:flex-row gap-3 pt-2">
                       <button
                         type="submit"

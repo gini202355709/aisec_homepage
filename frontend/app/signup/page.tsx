@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   User,
   Mail,
@@ -15,14 +16,22 @@ import {
   Check,
   Building2,
 } from 'lucide-react';
+import { registerUser, setAuthToken } from '@/lib/api';
 
 export default function SignupPage() {
+  const router = useRouter();
   const [showPw, setShowPw] = useState(false);
   const [showPwConfirm, setShowPwConfirm] = useState(false);
   const [memberType, setMemberType] = useState<'personal' | 'corporate'>('personal');
 
+  const [name, setName] = useState('');
+  const [company, setCompany] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [pw, setPw] = useState('');
   const [pwConfirm, setPwConfirm] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const pwMismatch = pwConfirm.length > 0 && pw !== pwConfirm;
 
   const [agreements, setAgreements] = useState({
@@ -37,6 +46,36 @@ export default function SignupPage() {
     setAgreements({ terms: checked, privacy: checked, marketing: checked });
   const handleOneChange = (key: keyof typeof agreements, checked: boolean) =>
     setAgreements((prev) => ({ ...prev, [key]: checked }));
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (pwMismatch || !requiredAgreed) {
+      setSubmitMessage('비밀번호 확인과 필수 약관 동의를 확인해주세요.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitMessage(null);
+
+    try {
+      const result = await registerUser({
+        name,
+        email,
+        password: pw,
+        phone,
+        memberType,
+        company: memberType === 'corporate' ? company : '',
+      });
+
+      setAuthToken(result.token);
+      router.push('/');
+    } catch (error) {
+      setSubmitMessage(error instanceof Error ? error.message : '회원가입에 실패했습니다.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const memberTypes = [
     { id: 'personal' as const, label: '개인회원', icon: <User size={18} /> },
@@ -123,11 +162,7 @@ export default function SignupPage() {
           </p>
 
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (pwMismatch || !requiredAgreed) return;
-              // TODO: 실제 회원가입 로직 연결 (예: 회원가입 API 호출 또는 NextAuth)
-            }}
+            onSubmit={handleSubmit}
             className="space-y-5"
           >
             {/* 회원 유형 */}
@@ -168,6 +203,8 @@ export default function SignupPage() {
                   type="text"
                   required
                   placeholder="홍길동"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 bg-white border border-[#dde4ef] rounded-2xl text-[15px] placeholder:text-[#aab7c8] focus:outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10 transition-all"
                 />
               </div>
@@ -193,6 +230,8 @@ export default function SignupPage() {
                     type="text"
                     required
                     placeholder="(주)한국에이아이"
+                    value={company}
+                    onChange={(e) => setCompany(e.target.value)}
                     className="w-full pl-12 pr-4 py-4 bg-white border border-[#dde4ef] rounded-2xl text-[15px] placeholder:text-[#aab7c8] focus:outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10 transition-all"
                   />
                 </div>
@@ -212,6 +251,8 @@ export default function SignupPage() {
                   type="email"
                   required
                   placeholder="name@kaisa.or.kr"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 bg-white border border-[#dde4ef] rounded-2xl text-[15px] placeholder:text-[#aab7c8] focus:outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10 transition-all"
                 />
               </div>
@@ -230,6 +271,8 @@ export default function SignupPage() {
                   type="tel"
                   required
                   placeholder="010-1234-5678"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 bg-white border border-[#dde4ef] rounded-2xl text-[15px] placeholder:text-[#aab7c8] focus:outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10 transition-all"
                 />
               </div>
@@ -377,12 +420,13 @@ export default function SignupPage() {
             </div>
 
             {/* 가입 버튼 */}
+            {submitMessage ? <p className="text-[13px] text-red-500">{submitMessage}</p> : null}
             <button
               type="submit"
-              disabled={!requiredAgreed || pwMismatch}
+              disabled={!requiredAgreed || pwMismatch || isSubmitting}
               className="w-full flex items-center justify-center gap-2 py-4 bg-[#2563eb] text-white rounded-2xl font-bold hover:bg-[#1d4ed8] transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
             >
-              회원가입 <ArrowRight size={18} />
+              {isSubmitting ? '처리 중...' : '회원가입'} <ArrowRight size={18} />
             </button>
           </form>
 

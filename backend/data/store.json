@@ -1,0 +1,97 @@
+{
+  "users": [
+    {
+      "id": "97655ef7-f9cf-49a0-8712-fb5971215f38",
+      "name": "관리자",
+      "email": "admin@kaisa.or.kr",
+      "role": "admin",
+      "memberType": "corporate",
+      "company": "KAISA",
+      "passwordHash": "$2a$10$g/z.ENeluhJ5s0iXHqSY9uEfwo815q5skRIzM106AIp9MQHqn594O",
+      "createdAt": "2026-06-26T08:58:24.373Z",
+      "updatedAt": "2026-06-26T08:58:24.374Z"
+    },
+    {
+      "id": "94ca8890-92bd-4d12-8bd8-b39f077d73d3",
+      "name": "??? ???",
+      "email": "test@example.com",
+      "phone": "",
+      "role": "member",
+      "memberType": "personal",
+      "company": "",
+      "passwordHash": "$2a$10$TQGx35jBVQVeQ0Lp4QLpPO9EW9rVWsI.SuMYmiHSrqZS00zrnanRG",
+      "createdAt": "2026-06-26T08:58:48.906Z",
+      "updatedAt": "2026-06-26T08:58:48.906Z"
+    }
+  ],
+  "notices": [
+    {
+      "id": "1d960626-2dc9-4477-8198-afc14d7b483d",
+      "tag": "중요",
+      "title": "2026 한국AI보안협회 정기총회 및 AI 보안 컨퍼런스 개최 안내",
+      "content": "정기총회와 컨퍼런스를 개최합니다.",
+      "date": "2026.05.14",
+      "views": 1284,
+      "pinned": true,
+      "createdAt": "2026-06-26T08:58:24.374Z",
+      "updatedAt": "2026-06-26T08:58:24.374Z"
+    },
+    {
+      "id": "87fb7965-c880-4a23-b5a7-a8146e92f7dc",
+      "tag": "모집",
+      "title": "AI 보안 전문위원회 신규 위원 모집 공고",
+      "content": "전문위원회 신규 위원을 모집합니다.",
+      "date": "2026.05.02",
+      "views": 892,
+      "pinned": false,
+      "createdAt": "2026-06-26T08:58:24.374Z",
+      "updatedAt": "2026-06-26T08:58:24.374Z"
+    }
+  ],
+  "resources": [
+    {
+      "id": "cd3822be-d6a6-4611-9c85-5d660a37fbf6",
+      "title": "AI 시스템 보안 가이드라인 v2.0",
+      "type": "PDF",
+      "size": "3.2MB",
+      "date": "2026.05.10",
+      "downloads": 1842,
+      "description": "AI 시스템 보안 운영 가이드라인",
+      "createdAt": "2026-06-26T08:58:24.374Z",
+      "updatedAt": "2026-06-26T08:58:24.374Z"
+    },
+    {
+      "id": "b8d9775e-44cc-4673-83af-6ba4a9c33b79",
+      "title": "생성형 AI 보안 위협 대응 체크리스트",
+      "type": "DOC",
+      "size": "480KB",
+      "date": "2026.04.28",
+      "downloads": 956,
+      "description": "내부 보안 대응 체크리스트",
+      "createdAt": "2026-06-26T08:58:24.374Z",
+      "updatedAt": "2026-06-26T08:58:24.374Z"
+    }
+  ],
+  "gallery": [
+    {
+      "id": "61a6aae2-09af-438d-8934-4b27127c0f7c",
+      "title": "AI 보안 컨퍼런스 2026",
+      "description": "국내외 전문가 250명이 참여한 협회 대표 행사",
+      "date": "2026.05.14",
+      "imageUrl": "/images/conference-2026.jpg",
+      "createdAt": "2026-06-26T08:58:24.374Z",
+      "updatedAt": "2026-06-26T08:58:24.374Z"
+    },
+    {
+      "id": "60f8a826-2c09-4b57-9225-91ba85aba1e3",
+      "title": "전문위원회 발족식",
+      "description": "6대 전문위원회 위원장 위촉 및 운영 방향 발표",
+      "date": "2026.04.03",
+      "imageUrl": "/images/committee-launch.jpg",
+      "createdAt": "2026-06-26T08:58:24.374Z",
+      "updatedAt": "2026-06-26T08:58:24.374Z"
+    }
+  ],
+  "contacts": [],
+  "membershipApplications": []
+}

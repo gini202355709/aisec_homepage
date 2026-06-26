@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   Mail,
   Lock,
@@ -12,10 +13,32 @@ import {
   ShieldCheck,
   Check,
 } from 'lucide-react';
+import { loginUser, setAuthToken } from '@/lib/api';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPw, setShowPw] = useState(false);
   const [remember, setRemember] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage(null);
+
+    try {
+      const result = await loginUser({ email, password });
+      setAuthToken(result.token);
+      router.push('/');
+    } catch (error) {
+      setSubmitMessage(error instanceof Error ? error.message : '로그인에 실패했습니다.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-white font-sans text-[#0f172a] selection:bg-[#2563eb] selection:text-white">
@@ -94,10 +117,7 @@ export default function LoginPage() {
           </p>
 
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              // TODO: 실제 인증 로직 연결 (예: NextAuth signIn() 또는 로그인 API 호출)
-            }}
+            onSubmit={handleSubmit}
             className="space-y-6"
           >
             {/* 이메일 */}
@@ -113,6 +133,8 @@ export default function LoginPage() {
                   type="email"
                   required
                   placeholder="name@kaisa.or.kr"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 bg-white border border-[#dde4ef] rounded-2xl text-[15px] placeholder:text-[#aab7c8] focus:outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10 transition-all"
                 />
               </div>
@@ -134,6 +156,8 @@ export default function LoginPage() {
                   type={showPw ? 'text' : 'password'}
                   required
                   placeholder="비밀번호를 입력하세요"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-12 pr-12 py-4 bg-white border border-[#dde4ef] rounded-2xl text-[15px] placeholder:text-[#aab7c8] focus:outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#2563eb]/10 transition-all"
                 />
                 <button
@@ -167,11 +191,13 @@ export default function LoginPage() {
             </div>
 
             {/* 로그인 버튼 */}
+            {submitMessage ? <p className="text-[13px] text-red-500">{submitMessage}</p> : null}
             <button
               type="submit"
+              disabled={isSubmitting}
               className="w-full flex items-center justify-center gap-2 py-4 bg-[#2563eb] text-white rounded-2xl font-bold hover:bg-[#1d4ed8] transition-all hover:shadow-xl hover:-translate-y-0.5"
             >
-              로그인 <ArrowRight size={18} />
+              {isSubmitting ? '로그인 중...' : '로그인'} <ArrowRight size={18} />
             </button>
           </form>
 

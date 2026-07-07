@@ -198,6 +198,26 @@ function findUserById(id) {
   return getState().users.find((user) => user.id === id) || null;
 }
 
+function updateUser(id, updates) {
+  const user = findUserById(id);
+  if (!user) return null;
+  if (typeof updates.name === 'string') {
+    user.name = updates.name;
+  }
+  if (typeof updates.phone === 'string') {
+    user.phone = updates.phone;
+  }
+  if (typeof updates.company === 'string') {
+    user.company = updates.company;
+  }
+  if (typeof updates.passwordHash === 'string') {
+    user.passwordHash = updates.passwordHash;
+  }
+  user.updatedAt = new Date().toISOString();
+  saveState();
+  return user;
+}
+
 function createNotice(data) {
   const now = new Date().toISOString();
   const notice = {
@@ -402,6 +422,7 @@ module.exports = {
   createUser,
   findUserByEmail,
   findUserById,
+  updateUser,
   createNotice,
   listNotices,
   getNoticeById,

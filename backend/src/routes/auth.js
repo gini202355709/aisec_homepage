@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
-const { createUser, findUserByEmail, getUserProfile } = require('../data/store');
+const { createUser, findUserByEmail, getUserProfile, updateUser } = require('../data/store');
 const { comparePassword, hashPassword, signToken } = require('../utils/auth');
 const { ADMIN_REGISTRATION_SECRET } = require('../config/env');
 
@@ -57,6 +57,28 @@ router.post('/login', (req, res) => {
 
 router.get('/me', authMiddleware, (req, res) => {
   return res.json({ user: getUserProfile(req.user) });
+});
+
+router.patch('/me', authMiddleware, (req, res) => {
+  const { name, phone, company, password } = req.body;
+  if (!req.user) {
+    return res.status(401).json({ message: '인증이 필요합니다.' });
+  }
+
+  const updates = {};
+  if (typeof name === 'string') updates.name = name;
+  if (typeof phone === 'string') updates.phone = phone;
+  if (typeof company === 'string') updates.company = company;
+  if (typeof password === 'string' && password.length > 0) {
+    updates.passwordHash = hashPassword(password);
+  }
+
+  const updatedUser = updateUser(req.user.id, updates);
+  if (!updatedUser) {
+    return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
+  }
+
+  return res.json({ message: '회원 정보가 업데이트되었습니다.', user: getUserProfile(updatedUser) });
 });
 
 module.exports = router;

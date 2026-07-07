@@ -44,10 +44,18 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     headers['Content-Type'] = 'application/json';
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers,
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      headers,
+    });
+  } catch (error) {
+    throw new Error(
+      '서버에 연결할 수 없습니다. 백엔드가 실행 중인지, 그리고 API URL이 올바른지 확인하세요.',
+    );
+  }
 
   const contentType = response.headers.get('content-type') || '';
   const payload = contentType.includes('application/json')
@@ -83,6 +91,13 @@ export async function loginUser(payload: Record<string, unknown>) {
 
 export async function getMe() {
   return request<{ user: unknown }>('/auth/me');
+}
+
+export async function updateProfile(payload: Record<string, unknown>) {
+  return request<{ message: string; user: unknown }>('/auth/me', {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function fetchNotices() {

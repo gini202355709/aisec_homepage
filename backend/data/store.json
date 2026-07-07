@@ -3,13 +3,14 @@
     {
       "id": "97655ef7-f9cf-49a0-8712-fb5971215f38",
       "name": "관리자",
-      "email": "admin@kaisa.or.kr",
+      "email": "accslab@pusan.ac.kr",
       "role": "admin",
       "memberType": "corporate",
-      "company": "KAISA",
-      "passwordHash": "$2a$10$g/z.ENeluhJ5s0iXHqSY9uEfwo815q5skRIzM106AIp9MQHqn594O",
+      "company": "한국AI보안협회",
+      "passwordHash": "$2a$10$/HTMBUXeBcuBXCI0Spn8HutWvP5q6Kn9Wgs8LfsKBTJFo85qCOi2u",
       "createdAt": "2026-06-26T08:58:24.373Z",
-      "updatedAt": "2026-06-26T08:58:24.374Z"
+      "updatedAt": "2026-07-07T07:03:07.225Z",
+      "phone": "accslab@pusan.ac.kr"
     },
     {
       "id": "94ca8890-92bd-4d12-8bd8-b39f077d73d3",
@@ -22,6 +23,18 @@
       "passwordHash": "$2a$10$TQGx35jBVQVeQ0Lp4QLpPO9EW9rVWsI.SuMYmiHSrqZS00zrnanRG",
       "createdAt": "2026-06-26T08:58:48.906Z",
       "updatedAt": "2026-06-26T08:58:48.906Z"
+    },
+    {
+      "id": "64b3e99c-4c31-4c6a-9d7f-2939ff3bb222",
+      "name": "정지인",
+      "email": "gini202355709@gmail.com",
+      "phone": "010-9556-7752",
+      "role": "member",
+      "memberType": "personal",
+      "company": "AX융합사이버보안연구실",
+      "passwordHash": "$2a$10$FBueaefCmLxfxywSy7yglu.hvLJ3KnPNmZqICyNc0m6zrij6gVwoy",
+      "createdAt": "2026-07-07T07:03:47.610Z",
+      "updatedAt": "2026-07-07T07:04:08.641Z"
     }
   ],
   "notices": [

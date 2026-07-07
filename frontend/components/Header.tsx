@@ -1,9 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { ChevronDown, Search, Menu } from 'lucide-react';
+import { clearAuthToken, getMe } from '@/lib/api';
 
 const NAV_ITEMS = [
   {
@@ -53,13 +55,56 @@ const NAV_ITEMS = [
 ];
 
 export default function Header() {
+  const router = useRouter();
+  const [user, setUser] = useState<Record<string, unknown> | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const result = await getMe();
+        setUser(result.user as Record<string, unknown>);
+      } catch {
+        clearAuthToken();
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadUser();
+  }, []);
+
+  const handleLogout = () => {
+    clearAuthToken();
+    setUser(null);
+    router.push('/');
+  };
+
   return (
     <>
       {/* UTIL BAR */}
       <div className="hidden lg:block bg-white border-b border-[#eaeff8] py-2">
         <div className="max-w-[1320px] mx-auto px-10 flex justify-end gap-6 text-[12.5px] text-[#7a8fa8]">
-          <Link href="/login" className="hover:text-[#2563eb] transition-colors">로그인</Link>
-          <Link href="/signup" className="hover:text-[#2563eb] transition-colors">회원가입</Link>
+          {loading ? (
+            <span className="text-[#7a8fa8]">로딩 중...</span>
+          ) : user ? (
+            <>
+              <Link href="/mypage" className="hover:text-[#2563eb] transition-colors">마이페이지</Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="hover:text-[#2563eb] transition-colors"
+              >
+                로그아웃
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="hover:text-[#2563eb] transition-colors">로그인</Link>
+              <Link href="/signup" className="hover:text-[#2563eb] transition-colors">회원가입</Link>
+            </>
+          )}
           <Link href="/en" className="hover:text-[#2563eb] transition-colors font-medium">English</Link>
         </div>
       </div>
